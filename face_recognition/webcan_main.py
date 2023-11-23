@@ -3,7 +3,7 @@ from simple_facerec import SimpleFacerec
 
 # codificar os rosto da pasta
 sfr = SimpleFacerec()
-sfr.load_encoding_images("../images/faces")
+sfr.load_encoding_images("./images/faces")
 
 # carregar camera
 cap = cv2.VideoCapture(0)
