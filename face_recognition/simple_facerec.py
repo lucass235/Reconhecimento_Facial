@@ -6,66 +6,64 @@ import numpy as np
 
 class SimpleFacerec:
     def __init__(self):
+        # Listas para armazenar codificações faciais e nomes associados
         self.known_face_encodings = []
         self.known_face_names = []
 
-        # Resize frame for a faster speed
+        # Redimensionamento do frame para acelerar o processo
         self.frame_resizing = 0.25
 
     def load_encoding_images(self, images_path):
         """
-        Load encoding images from path
-        :param images_path:
-        :return:
+        Carrega as imagens codificadas do caminho especificado
+        :param images_path: Caminho das imagens
+        :return: None
         """
-        # Load Images
+        # Carregar imagens
         images_path = glob.glob(os.path.join(images_path, "*.*"))
 
-        print("{} encoding images found.".format(len(images_path)))
+        print("{} imagens de codificação encontradas.".format(len(images_path)))
 
-        # Store image encoding and names
+        # Armazenar codificação da imagem e nomes
         for img_path in images_path:
             img = cv2.imread(img_path)
             rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-            # Get the filename only from the initial file path.
+            # Obter apenas o nome do arquivo do caminho do arquivo inicial.
             basename = os.path.basename(img_path)
             (filename, ext) = os.path.splitext(basename)
-            # Get encoding
+            # Obter codificação
             img_encoding = face_recognition.face_encodings(rgb_img)[0]
 
-            # Store file name and file encoding
+            # Armazenar nome do arquivo e codificação do arquivo
             self.known_face_encodings.append(img_encoding)
             self.known_face_names.append(filename)
-        print("Encoding images loaded")
+        print("Imagens de codificação carregadas")
 
     def detect_known_faces(self, frame):
+        # Redimensionar o frame para acelerar o processo
         small_frame = cv2.resize(frame, (0, 0), fx=self.frame_resizing, fy=self.frame_resizing)
-        # Find all the faces and face encodings in the current frame of video
-        # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+
+        # Encontrar todos os rostos e codificações faciais no frame atual do vídeo
+        # Converter a imagem de cor BGR (usada pelo OpenCV) para cor RGB (usada pelo face_recognition)
         rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
         face_names = []
         for face_encoding in face_encodings:
-            # See if the face is a match for the known face(s)
+            # Verificar se o rosto é uma correspondência para o(s) rosto(s) conhecido(s)
             matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
-            name = "Unknown"
+            name = "Desconhecido"
 
-            # # If a match was found in known_face_encodings, just use the first one.
-            # if True in matches:
-            #     first_match_index = matches.index(True)
-            #     name = known_face_names[first_match_index]
-
-            # Or instead, use the known face with the smallest distance to the new face
+            # Ou, em vez disso, usar o rosto conhecido com a menor distância para o novo rosto
             face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
             best_match_index = np.argmin(face_distances)
             if matches[best_match_index]:
                 name = self.known_face_names[best_match_index]
             face_names.append(name)
 
-        # Convert to numpy array to adjust coordinates with frame resizing quickly
+        # Converter para um array NumPy para ajustar rapidamente as coordenadas com o redimensionamento do frame
         face_locations = np.array(face_locations)
         face_locations = face_locations / self.frame_resizing
         return face_locations.astype(int), face_names

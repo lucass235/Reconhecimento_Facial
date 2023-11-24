@@ -23,23 +23,23 @@ while True:
         top, left, bottom, right = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
         
         # Configurar texto e estilo da fonte para exibição
-        label = "Acesso Liberado"
+        label = "Acesso Liberado,"
         font = cv2.FONT_HERSHEY_DUPLEX
         font_scale = 1
         font_thickness = 2
         
         # Calcular posição do texto na parte inferior central do frame
         text_size, _ = cv2.getTextSize(label, font, font_scale, font_thickness)
-        bottom_left = (int((frame.shape[1] - text_size[0]) / 2), frame.shape[0] - 30)
+        bottom_left = (int((frame.shape[1] - text_size[0]) / 3.5), frame.shape[0] - 30)
         
         # Verificar se o rosto pertence à pessoa autorizada (Lucas)
-        if name != "Unknown":
+        if name != "Desconhecido":
             label = label + " " + name
             cv2.putText(frame, label, bottom_left, font, font_scale, (0, 255, 0), font_thickness)
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
         else:
             # Configurar mensagem de acesso negado para rostos desconhecidos ou não autorizados
-            label = "Acesso Negado" + " " + (name if name != "Unknown" else "Desconhecido")
+            label = "Acesso Negado," + " " + name
             cv2.putText(frame, label, bottom_left, font, font_scale, (0, 0, 255), font_thickness)
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
