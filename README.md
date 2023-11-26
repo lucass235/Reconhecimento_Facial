@@ -34,3 +34,13 @@ pip install -r requirements.txt
 ```
 
 OBS: Para rodar o sistema utilizando uma GPU da NVIDIA, é necessário instalar o CUDA Toolkit e a biblioteca especifica do opencv para GPU que esta dentro do arquivo requirements.txt, (opencv-python-headless), para isso é necessário descometa a linha referente a essa biblioteca dentro do arquivo requirements.txt e executar o comando acima.
+
+No windows voce pode ter problemas para baixar a biblioteca face_recognition, para isso, basta seguir o tutorial abaixo:
+
+- Voce deve instalar a biblioteca dlib manualmente no terminal 
+
+- O arquivo da biblioteca esta dentro da pasta ./instalaçao_dlib/
+
+- Verifique a sua versão do pyhton e baixe a biblioteca dlib correspondente
+
+- Para instalar a biblioteca dlib, basta executar o comando `pip install <Arquivo dlib da sua versao do python correspondente>`. Exemplo: `pip install dlib-19.21.1-cp37-cp37m-win_amd64.whl`.
